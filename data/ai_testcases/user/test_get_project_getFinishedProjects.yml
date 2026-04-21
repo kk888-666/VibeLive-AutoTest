@@ -1,0 +1,72 @@
+get_finished_projects_normal_success:
+  allure:
+    title: "获取已完成项目-正常场景-成功返回已完成项目列表"
+    description: "验证已登录用户调用获取已完成项目接口时，能够成功返回状态为'已完成'的项目列表，业务响应码为200"
+    epic: "项目管理平台"
+    feature: "项目查询模块"
+    story: "获取已完成项目"
+    tag: ["正常场景", "冒烟用例"]
+    pytest_mark: "smoke"
+  steps:
+    request:
+      method: "GET"
+      url: "/project/getFinishedProjects"
+      headers:
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          list_data:
+              object_required_items:
+                - "id"
+                - "projectName"
+                - "projectType"
+                - "applicant"
+                - "funds"
+                - "status"
+                - "remainingFunds"
+                - "startTime"
+                - "deadline"
+                - "updateTime"
+
+get_finished_projects_abnormal_unauthorized:
+  allure:
+    title: "获取已完成项目-异常场景-未登录访问返回401"
+    description: "验证未登录用户（无token）调用获取已完成项目接口时，系统拒绝访问并返回401未授权错误"
+    epic: "项目管理平台"
+    feature: "项目查询模块"
+    story: "获取已完成项目"
+    tag: ["异常场景", "安全测试"]
+    pytest_mark: ""
+  steps:
+    request:
+      method: "GET"
+      url: "/project/getFinishedProjects"
+      headers: {
+                 "Token": ""
+      }
+    expected:
+
+get_finished_projects_boundary_empty_list:
+  allure:
+    title: "获取已完成项目-边界场景-无已完成项目返回空列表"
+    description: "验证当前用户没有任何已完成项目时，接口应正常返回200且data.records为空数组"
+    epic: "项目管理平台"
+    feature: "项目查询模块"
+    story: "获取已完成项目"
+    tag: ["边界场景", "数据兼容性"]
+    pytest_mark: "regression"
+  steps:
+    request:
+      method: "GET"
+      url: "/project/getFinishedProjects"
+      headers:
+        Authorization: "${extract:login_token}"
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:

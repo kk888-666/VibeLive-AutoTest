@@ -1,0 +1,168 @@
+get_projects_approval_list_normal_default_page_size:
+  allure:
+    title: "获取项目审批列表-正常场景-默认页码和每页条数"
+    description: "验证管理员分页获取待审批项目列表接口，使用默认页码和每页条数，能正常返回数据"
+    epic: "项目管理平台"
+    feature: "项目审批模块"
+    story: "获取项目审批列表"
+    tag: ["正常场景", "分页查询"]
+    pytest_mark: "smoke"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/projectsApprovalList"
+      headers:
+      params: {}
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          required_fields: ["records", "total", "pageSize", "page"]
+          assert:
+            type:
+              total: int
+              pageSize: int
+              page: int
+          list_check:
+            records:
+              length: 5
+              every_item_required_fields:
+                - "projectName"
+                - "startTime"
+                - "deadline"
+                - "content"
+                - "applicant"
+                - "funds"
+
+get_projects_approval_list_normal_custom_page_size:
+  allure:
+    title: "获取项目审批列表-正常场景-自定义页码和每页条数"
+    description: "验证管理员分页获取待审批项目列表接口，传入自定义页码和每页条数，能正常返回指定分页数据"
+    epic: "项目管理平台"
+    feature: "项目审批模块"
+    story: "获取项目审批列表"
+    tag: ["正常场景", "分页查询"]
+    pytest_mark: "regression"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/projectsApprovalList"
+      headers:
+      params:
+        page: 1
+        size: 10
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          required_fields: ["records", "total", "pageSize", "page"]
+          assert:
+            lte:
+              pageSize: 10
+            type:
+              total: int
+              page: int
+          list_check:
+            records:
+              length: 10
+              every_item_required_fields:
+                - "projectName"
+                - "startTime"
+                - "deadline"
+                - "content"
+                - "applicant"
+                - "funds"
+
+get_projects_approval_list_abnormal_unauthorized:
+  allure:
+    title: "获取项目审批列表-异常场景-未登录访问"
+    description: "验证未携带Token时访问获取项目审批列表接口，应返回401或403权限不足"
+    epic: "项目管理平台"
+    feature: "项目审批模块"
+    story: "获取项目审批列表"
+    tag: ["异常场景", "权限校验"]
+    pytest_mark: "security"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/projectsApprovalList"
+      headers: {
+                 "Token": ""
+      }
+      params: {}
+    expected:
+      status_code: 401
+
+
+get_projects_approval_list_boundary_min_page:
+  allure:
+    title: "获取项目审批列表-边界场景-页码为最小值0"
+    description: "验证页码为0时，接口是否兼容处理，默认返回第一页数据"
+    epic: "项目管理平台"
+    feature: "项目审批模块"
+    story: "获取项目审批列表"
+    tag: ["边界场景", "参数校验"]
+    pytest_mark: "boundary"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/projectsApprovalList"
+      headers:
+      params:
+        page: 0
+        size: 5
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          assert:
+            eq:
+              page: 1
+          list_check:
+            records:
+              length: 5
+              every_item_required_fields:
+                - "projectName"
+                - "startTime"
+                - "deadline"
+                - "content"
+                - "applicant"
+                - "funds"
+
+get_projects_approval_list_boundary_max_page:
+  allure:
+    title: "获取项目审批列表-边界场景-页码为极大值"
+    description: "验证页码为极大值（如9999）时，接口返回空列表或总页数限制"
+    epic: "项目管理平台"
+    feature: "项目审批模块"
+    story: "获取项目审批列表"
+    tag: ["边界场景", "分页容错"]
+    pytest_mark: "boundary"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/projectsApprovalList"
+      headers:
+      params:
+        page: 9999
+        size: 5
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          assert:
+            type:
+              total: int
+              pageSize: int
+              page: int
+          list_check:
+            records:
+              length: 0

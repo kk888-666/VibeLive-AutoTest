@@ -1,0 +1,37 @@
+# 登录模块测试用例数据
+get_public_key:
+  # 1. 用例元信息
+  allure:
+    title: "获取登录公钥接口测试用例"
+    description: "获取公钥接口"
+    epic: "InvEntropy"
+    feature: "登录模块"
+    story: "获取登录公钥接口"
+    tag: [ "登录", "接口测试" ]
+    pytest_mark: "api"
+
+
+  steps:
+    # 2. 请求信息
+    request:
+      method: "GET"
+      url: "/login/auth/publicKey"
+      headers: {}
+      params: {}
+      json: {}
+
+    # 3. 预期断言规则
+    expected:
+      status_code: 200  # 响应状态码
+      response:
+        code: 200       # 业务码
+        msg: "success"  # 提示信息
+        data:
+          # 校验data下的字段是否存在
+          required_fields: ["publicKey", "timestamp", "algorithm"]
+          # 校验data下的字段值
+          algorithm: "RSA"
+
+    # 4. 提取数据
+    extract:
+      publicKey: $.data.publicKey

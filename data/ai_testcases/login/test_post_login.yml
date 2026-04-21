@@ -1,0 +1,156 @@
+user_login_normal_correct_username_password:
+  allure:
+    title: "用户登录-正常场景-正确账号密码登录成功"
+    description: "验证用户使用正确的账号、密码和用户类型登录，能够成功返回Token，业务响应码为200"
+    epic: "用户中心系统"
+    feature: "用户认证模块"
+    story: "账号密码登录"
+    tag: ["正常场景", "冒烟用例"]
+    pytest_mark: "smoke"
+  steps:
+    request:
+      method: "POST"
+      url: "/login"
+      headers:
+      json:
+        username: "admin"
+        password: "123456"
+        userType: "admin"
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          required_fields: ["userType", "token"]
+          assert:
+            eq:
+              userType: "admin"
+            type:
+              userType: str
+              token: str
+    extract:
+      login_token: $.data.token
+
+user_login_abnormal_missing_username:
+  allure:
+    title: "用户登录-异常场景-缺少用户名"
+    description: "验证用户登录时未提供用户名，接口应返回参数错误，业务码400"
+    epic: "用户中心系统"
+    feature: "用户认证模块"
+    story: "账号密码登录"
+    tag: ["异常场景", "参数校验"]
+    pytest_mark: ""
+  steps:
+    request:
+      method: "POST"
+      url: "/login"
+      headers:
+      json:
+        password: "123456"
+        userType: "admin"
+    expected:
+      status_code: 200
+      response:
+        code: 400
+        msg: "用户名或密码错误"
+        data: {}
+
+user_login_abnormal_missing_password:
+  allure:
+    title: "用户登录-异常场景-缺少密码"
+    description: "验证用户登录时未提供密码，接口应返回参数错误，业务码400"
+    epic: "用户中心系统"
+    feature: "用户认证模块"
+    story: "账号密码登录"
+    tag: ["异常场景", "参数校验"]
+    pytest_mark: ""
+  steps:
+    request:
+      method: "POST"
+      url: "/login"
+      headers:
+      json:
+        username: "admin"
+        userType: "admin"
+        password: ""
+    expected:
+      status_code: 200
+      response:
+        code: 400
+        msg: "用户名或密码错误"
+        data: {}
+
+user_login_abnormal_missing_userType:
+  allure:
+    title: "用户登录-异常场景-缺少用户类型"
+    description: "验证用户登录时未提供用户类型，接口应返回参数错误，业务码400"
+    epic: "用户中心系统"
+    feature: "用户认证模块"
+    story: "账号密码登录"
+    tag: ["异常场景", "参数校验"]
+    pytest_mark: ""
+  steps:
+    request:
+      method: "POST"
+      url: "/login"
+      headers:
+      json:
+        username: "admin"
+        password: "123456"
+    expected:
+      status_code: 200
+      response:
+        code: 400
+        msg: "用户名或密码错误"
+        data: {}
+
+user_login_abnormal_wrong_password:
+  allure:
+    title: "用户登录-异常场景-密码错误"
+    description: "验证用户登录时提供错误密码，接口应返回认证失败，业务码400"
+    epic: "用户中心系统"
+    feature: "用户认证模块"
+    story: "账号密码登录"
+    tag: ["异常场景", "安全校验"]
+    pytest_mark: ""
+  steps:
+    request:
+      method: "POST"
+      url: "/login"
+      headers:
+      json:
+        username: "admin"
+        password: "1234"
+        userType: "admin"
+    expected:
+      status_code: 200
+      response:
+        code: 400
+        msg: "用户名或密码错误"
+        data: {}
+
+user_login_abnormal_invalid_userType:
+  allure:
+    title: "用户登录-异常场景-无效的用户类型"
+    description: "验证用户登录时提供非法用户类型，接口应返回认证失败，业务码400"
+    epic: "用户中心系统"
+    feature: "用户认证模块"
+    story: "账号密码登录"
+    tag: ["异常场景", "边界值测试"]
+    pytest_mark: ""
+  steps:
+    request:
+      method: "POST"
+      url: "/login"
+      headers:
+      json:
+        username: "admin"
+        password: "123456"
+        userType: "invalid_type"
+    expected:
+      status_code: 200
+      response:
+        code: 400
+        msg: "用户名或密码错误"
+        data: {}

@@ -1,0 +1,40 @@
+get_user_info_normal_authenticated:
+  allure:
+    title: "获取用户信息-正常场景-已登录用户成功获取信息"
+    description: "验证已登录用户调用获取用户信息接口，能够成功返回用户基本信息，业务响应码为200"
+    epic: "用户中心系统"
+    feature: "用户信息模块"
+    story: "获取当前登录用户信息"
+    tag: ["正常场景", "核心流程"]
+    pytest_mark: "smoke"
+  steps:
+    request:
+      method: "GET"
+      url: "/homes/userInfo"
+      headers:
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          required_fields: ["id", "name", "gender","age","phone","college","passedProjects","finishedProjects","ingProjects"]
+
+get_user_info_abnormal_unauthorized:
+  allure:
+    title: "获取用户信息-异常场景-未携带Token访问被拒绝"
+    description: "验证未携带有效Token的请求调用获取用户信息接口，应返回401未授权错误"
+    epic: "用户中心系统"
+    feature: "用户信息模块"
+    story: "获取当前登录用户信息"
+    tag: ["异常场景", "安全测试"]
+    pytest_mark: ""
+  steps:
+    request:
+      method: "GET"
+      url: "/homes/userInfo"
+      headers: {
+                 "Token": ""
+      }
+    expected:
+      status_code: 401

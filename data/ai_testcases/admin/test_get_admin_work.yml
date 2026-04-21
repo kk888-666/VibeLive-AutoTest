@@ -1,0 +1,44 @@
+get_work_types_normal_success:
+  allure:
+    title: "获取工作类型列表-正常场景-请求成功"
+    description: "验证用户发起GET请求获取工作类型列表，接口返回200状态码，业务码为200，响应数据结构正确"
+    epic: "项目管理平台"
+    feature: "工作类型管理模块"
+    story: "获取工作类型列表"
+    tag: ["正常场景", "冒烟用例"]
+    pytest_mark: "smoke"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/work"
+      headers: {}
+      params: {}
+      json: {}
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          required_fields: ["projectsRecords","fundsRecords","projectsOverTime"]
+
+get_work_types_abnormal_unauthorized_missing_token:
+  allure:
+    title: "获取工作类型列表-异常场景-未携带Token认证信息"
+    description: "验证未在请求头中携带JWT Token时，接口拒绝访问并返回401或403错误"
+    epic: "项目管理平台"
+    feature: "工作类型管理模块"
+    story: "获取工作类型列表"
+    tag: ["异常场景", "安全测试"]
+    pytest_mark: ""
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/work"
+      headers: {
+                 "Token": ""
+      }
+      params: {}
+      json: {}
+    expected:
+      status_code: 401

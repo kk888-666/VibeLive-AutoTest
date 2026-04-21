@@ -1,0 +1,110 @@
+add_account_normal_success:
+  allure:
+    title: "新增账号-正常场景-创建新账号成功"
+    description: "验证管理员使用合法参数调用新增账号接口，能够成功创建新账号，返回业务码200"
+    epic: "用户中心系统"
+    feature: "账号管理模块"
+    story: "新增账号"
+    tag: ["正常场景", "冒烟用例"]
+    pytest_mark: "smoke"
+  steps:
+    request:
+      method: "POST"
+      url: "/admin/addAccount"
+      headers:
+        Content-Type: "application/json"
+      json:
+        age: 32
+        college: "计算机学院"
+        name: "test_${random}"
+        gender: "M"
+        phone: "13800138000"
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+
+add_account_abnormal_missing_username:
+  allure:
+    title: "新增账号-异常场景-缺少用户名参数"
+    description: "验证调用新增账号接口时未提供username参数，应返回400业务错误码及相应提示"
+    epic: "用户中心系统"
+    feature: "账号管理模块"
+    story: "新增账号"
+    tag: ["异常场景", "必填项校验"]
+    pytest_mark: ""
+  steps:
+    request:
+      method: "POST"
+      url: "/admin/addAccount"
+      headers:
+        Content-Type: "application/json"
+      json:
+        age: 32
+        college: "计算机学院"
+        gender: "M"
+        phone: "13800138003"
+    expected:
+      status_code: 200
+      response:
+        code: 400
+        msg: "添加失败"
+        data:
+
+add_account_abnormal_missing_password:
+  allure:
+    title: "新增账号-异常场景-缺少密码参数"
+    description: "验证调用新增账号接口时未提供手机参数，应返回400业务错误码及相应提示"
+    epic: "用户中心系统"
+    feature: "账号管理模块"
+    story: "新增账号"
+    tag: ["异常场景", "必填项校验"]
+    pytest_mark: ""
+  steps:
+    request:
+      method: "POST"
+      url: "/admin/addAccount"
+      headers:
+        Content-Type: "application/json"
+      json:
+        age: 32
+        college: "计算机学院"
+        name: "test_${random}"
+        gender: "M"
+    expected:
+      status_code: 200
+      response:
+        code: 400
+        msg: "出错啦~"
+        data:
+
+
+add_account_abnormal_duplicate_username:
+  allure:
+    title: "新增账号-异常场景-用户名重复"
+    description: "验证使用已存在的用户名创建账号时，应返回400错误码及账号已存在提示"
+    epic: "用户中心系统"
+    feature: "账号管理模块"
+    story: "新增账号"
+    tag: ["异常场景", "唯一性校验"]
+    pytest_mark: ""
+  steps:
+    request:
+      method: "POST"
+      url: "/admin/addAccount"
+      headers:
+        Content-Type: "application/json"
+      json:
+        age: 32
+        college: "计算机学院"
+        name: "test_${random}"
+        gender: "M"
+        phone: "13312341234"
+    expected:
+      status_code: 200
+      response:
+        code: 400
+        msg: "该账户已存在"
+        data:

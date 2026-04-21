@@ -1,0 +1,177 @@
+get_projects_list_normal_default_page_size:
+  allure:
+    title: "获取项目列表-正常场景-默认分页参数查询成功"
+    description: "验证使用默认分页参数（page=1, size=5）调用接口，能正常返回项目列表数据，业务响应码为200"
+    epic: "项目管理平台"
+    feature: "项目查询模块"
+    story: "获取项目列表"
+    tag: ["正常场景", "冒烟用例"]
+    pytest_mark: "smoke"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/projectsList"
+      params: {}
+      headers: {}
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          required_fields: ["records", "total", "pageSize", "page"]
+          assert:
+            lte:
+              pageSize: 5
+            eq:
+              page: 1
+            type:
+              total: int
+              records: list
+          list_check:
+            records:
+              length: 5
+              every_item_required_fields:
+                - "id"
+                - "projectName"
+                - "applicantId"
+                - "projectType"
+                - "applicant"
+                - "funds"
+                - "remainingFunds"
+                - "status"
+                - "content"
+                - "startTime"
+                - "deadline"
+
+get_projects_list_normal_custom_page_size:
+  allure:
+    title: "获取项目列表-正常场景-自定义分页条数查询成功"
+    description: "验证传入自定义分页参数（page=1, size=10）调用接口，能正常返回10条项目数据"
+    epic: "项目管理平台"
+    feature: "项目查询模块"
+    story: "获取项目列表"
+    tag: ["正常场景", "分页测试"]
+    pytest_mark: "regression"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/projectsList"
+      params:
+        page: 1
+        size: 10
+      headers: {}
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          assert:
+            eq:
+              page: 1
+          list_check:
+            records:
+              every_item_required_fields:
+                - "id"
+                - "projectName"
+                - "applicantId"
+                - "projectType"
+                - "applicant"
+                - "funds"
+                - "remainingFunds"
+                - "status"
+                - "content"
+                - "startTime"
+                - "deadline"
+
+get_projects_list_normal_page_out_of_range:
+  allure:
+    title: "获取项目列表-边界场景-页码超出范围返回空列表"
+    description: "验证当请求页码超过实际总页数时，接口返回成功但records为空列表"
+    epic: "项目管理平台"
+    feature: "项目查询模块"
+    story: "获取项目列表"
+    tag: ["边界场景", "分页测试"]
+    pytest_mark: "regression"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/projectsList"
+      params:
+        page: 999
+        size: 5
+      headers: {}
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          assert:
+            type:
+              records: list
+          list_check:
+            records:
+              length: 0
+
+get_projects_list_abnormal_invalid_page_type:
+  allure:
+    title: "获取项目列表-异常场景-页码参数类型错误"
+    description: "验证传入非整型页码参数（如字符串）时，接口应返回400错误"
+    epic: "项目管理平台"
+    feature: "项目查询模块"
+    story: "获取项目列表"
+    tag: ["异常场景", "参数类型校验"]
+    pytest_mark: "regression"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/projectsList"
+      params:
+        page: "abc"
+        size: 5
+      headers: {}
+    expected:
+      status_code: 200
+      response:
+        code: 400
+        msg: "出错啦~"
+        data: null
+
+get_projects_list_abnormal_negative_page:
+  allure:
+    title: "获取项目列表-边界场景-页码为负数"
+    description: "验证传入负数页码时，接口是否正确处理并返回合理响应"
+    epic: "项目管理平台"
+    feature: "项目查询模块"
+    story: "获取项目列表"
+    tag: ["边界场景", "参数校验"]
+    pytest_mark: "regression"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/projectsList"
+      params:
+        page: -1
+        size: 5
+      headers: {}
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        data:
+          list_check:
+            records:
+              every_item_required_fields:
+                - "id"
+                - "projectName"
+                - "applicantId"
+                - "projectType"
+                - "applicant"
+                - "funds"
+                - "remainingFunds"
+                - "status"
+                - "content"
+                - "startTime"
+                - "deadline"

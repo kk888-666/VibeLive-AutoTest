@@ -1,0 +1,19 @@
+data0:
+  allure:
+    epic: "跃动现场系统"
+    feature: "商铺模块"
+    title: "获取商铺类型列表测试"  # <--- 加上这一行
+    description: "测试获取首页商铺类型列表接口，期望返回状态码200且success为true"
+    pytest_mark: "api"
+  steps:
+    request:
+      method: "GET"
+      url: "/shop-type/list"
+      headers: {}
+      params: {}
+      json: {}
+    extract: {}
+  expected:
+    status_code: 200
+    response:
+      success: true

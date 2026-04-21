@@ -1,0 +1,52 @@
+get_project_timelines_normal_valid_id:
+  allure:
+    title: "获取项目时间线-正常场景-有效项目ID查询成功"
+    description: "验证用户使用有效的项目ID调用获取项目时间线接口，能够正常返回时间线数据，业务响应码为200"
+    epic: "项目管理平台"
+    feature: "项目查询模块"
+    story: "获取项目时间线"
+    tag: ["正常场景", "冒烟用例"]
+    pytest_mark: "smoke"
+  steps:
+    request:
+      method: "GET"
+      url: "/project/getTimeLines/16"
+      headers:
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          list_data:
+            object_required_items:
+              - "id"
+              - "projectId"
+              - "oldStatus"
+              - "newStatus"
+              - "reason"
+              - "createTime"
+              - "approverId"
+
+
+get_project_timelines_abnormal_invalid_id:
+  allure:
+    title: "获取项目时间线-异常场景-无效项目ID返回失败"
+    description: "验证用户使用无效的项目ID（如负数或不存在的ID）调用接口时，系统应返回请求失败，业务码为400"
+    epic: "项目管理平台"
+    feature: "项目查询模块"
+    story: "获取项目时间线"
+    tag: ["异常场景", "边界值测试"]
+    pytest_mark: ""
+  steps:
+    request:
+      method: "GET"
+      url: "/project/getTimeLines/-1"
+      headers:
+        Authorization: "${extract:login_token}"
+    expected:
+      status_code: 200
+      response:
+        code: 400
+        msg: "出错啦~"
+        data:

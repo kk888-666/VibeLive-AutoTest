@@ -1,0 +1,62 @@
+get_user_ing_projects_normal_success:
+  allure:
+    title: "获取进行中项目-正常场景-成功返回进行中项目列表"
+    description: "验证当前用户调用获取进行中项目接口时，能够成功返回状态为进行中的项目数据，业务响应码为200"
+    epic: "项目管理平台"
+    feature: "项目查询模块"
+    story: "获取进行中项目"
+    tag: ["正常场景", "冒烟用例"]
+    pytest_mark: "smoke"
+  steps:
+    request:
+      method: "GET"
+      url: "/homes/userIngProjects"
+      headers:
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          list_data:
+            object_required_items: ["id", "projectName", "projectType", "applicant", "funds", "remainingFunds", "status"]
+
+get_user_ing_projects_abnormal_unauthorized:
+  allure:
+    title: "获取进行中项目-异常场景-未登录访问返回401"
+    description: "验证未携带token访问获取进行中项目接口时，系统拒绝访问并返回401未授权错误"
+    epic: "项目管理平台"
+    feature: "项目查询模块"
+    story: "获取进行中项目"
+    tag: ["异常场景", "安全测试"]
+    pytest_mark: ""
+  steps:
+    request:
+      method: "GET"
+      url: "/homes/userIngProjects"
+      headers: {
+                 "Token": ""
+      }
+    expected:
+      status_code: 401
+
+get_user_ing_projects_abnormal_no_data:
+  allure:
+    title: "获取进行中项目-边界场景-无进行中项目返回空列表"
+    description: "验证当前用户没有进行中项目时，接口应正常返回200，data为空数组或null"
+    epic: "项目管理平台"
+    feature: "项目查询模块"
+    story: "获取进行中项目"
+    tag: ["边界场景", "数据兼容性"]
+    pytest_mark: "regression"
+  steps:
+    request:
+      method: "GET"
+      url: "/homes/userIngProjects"
+      headers:
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:

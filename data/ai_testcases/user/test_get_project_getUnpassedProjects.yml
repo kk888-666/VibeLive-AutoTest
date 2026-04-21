@@ -1,0 +1,68 @@
+get_unpassed_projects_normal_success:
+  allure:
+    title: "获取未通过项目-正常场景-成功返回未通过审批的项目列表"
+    description: "验证已登录用户调用获取未通过项目接口时，能正常返回状态码200及业务码200，且返回数据为未通过审批的项目列表"
+    epic: "项目管理平台"
+    feature: "项目查询模块"
+    story: "获取未通过项目"
+    tag: ["正常场景", "冒烟用例"]
+    pytest_mark: "smoke"
+  steps:
+    request:
+      method: "GET"
+      url: "/project/getUnpassedProjects"
+      headers:
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          list_data:
+              object_required_items:
+                - "id"
+                - "projectName"
+                - "approver"
+                - "reason"
+                - "createTime"
+                - "status"
+
+get_unpassed_projects_abnormal_no_auth:
+  allure:
+    title: "获取未通过项目-异常场景-未携带认证Token访问被拒绝"
+    description: "验证未携带JWT Token调用获取未通过项目接口时，返回401状态码，业务码为401，提示未授权"
+    epic: "项目管理平台"
+    feature: "项目查询模块"
+    story: "获取未通过项目"
+    tag: ["异常场景", "安全测试"]
+    pytest_mark: ""
+  steps:
+    request:
+      method: "GET"
+      url: "/project/getUnpassedProjects"
+      headers: {
+                 "Token": ""
+      }
+    expected:
+      status_code: 401
+
+get_unpassed_projects_abnormal_invalid_status:
+  allure:
+    title: "获取未通过项目-边界场景-用户无未通过项目时返回空列表"
+    description: "验证当前用户没有处于'已驳回'状态的项目时，接口应正常返回200，业务码200，data中records为空数组"
+    epic: "项目管理平台"
+    feature: "项目查询模块"
+    story: "获取未通过项目"
+    tag: ["边界场景", "空数据测试"]
+    pytest_mark: "regression"
+  steps:
+    request:
+      method: "GET"
+      url: "/project/getUnpassedProjects"
+      headers:
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:

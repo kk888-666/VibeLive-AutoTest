@@ -1,0 +1,133 @@
+get_funds_log_list_normal_default_page_size:
+  allure:
+    title: "获取经费日志列表-正常场景-默认分页参数查询成功"
+    description: "验证管理员使用默认分页参数（page=1, size=5）请求经费日志列表接口，能够成功返回分页数据"
+    epic: "项目管理平台"
+    feature: "经费审批模块"
+    story: "获取经费日志列表"
+    tag: ["正常场景", "分页查询"]
+    pytest_mark: "regression"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/fundsLogList"
+      headers:
+      params:
+        page: 1
+        size: 5
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          required_fields: ["records", "total", "pageSize", "page"]
+          assert:
+            eq:
+              pageSize: 5
+              page: 1
+            type:
+              total: int
+          list_check:
+            records:
+              length: 5
+              every_item_required_fields:
+                - "id"
+                - "projectId"
+                - "applicantId"
+                - "reason"
+                - "appliedFunds"
+                - "appliedTime"
+                - "comment"
+                - "status"
+                - "approverId"
+                - "updateTime"
+
+get_funds_log_list_normal_custom_page_size:
+  allure:
+    title: "获取经费日志列表-正常场景-自定义每页条数查询成功"
+    description: "验证管理员设置自定义分页参数（page=1, size=10）请求经费日志列表接口，能够正确返回10条数据"
+    epic: "项目管理平台"
+    feature: "经费审批模块"
+    story: "获取经费日志列表"
+    tag: ["正常场景", "分页查询"]
+    pytest_mark: "regression"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/fundsLogList"
+      headers:
+        Authorization: ""
+      params:
+        page: 1
+        size: 10
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          assert:
+            lte:
+              pageSize: 10
+            eq:
+              page: 1
+          list_check:
+            records:
+              every_item_required_fields:
+                - "id"
+                - "projectId"
+                - "applicantId"
+                - "reason"
+                - "appliedFunds"
+                - "appliedTime"
+                - "comment"
+                - "status"
+                - "approverId"
+                - "updateTime"
+
+get_funds_log_list_abnormal_page_exceed_max:
+  allure:
+    title: "获取经费日志列表-异常场景-页码超出最大范围返回空数据"
+    description: "验证当请求的页码超过总页数时，接口返回成功但数据为空列表"
+    epic: "项目管理平台"
+    feature: "经费审批模块"
+    story: "获取经费日志列表"
+    tag: ["异常场景", "边界值测试"]
+    pytest_mark: "boundary"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/fundsLogList"
+      headers:
+      params:
+        page: 999
+        size: 5
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+
+get_funds_log_list_without_auth:
+  allure:
+    title: "获取经费日志列表-异常场景-未携带Token认证信息被拒绝访问"
+    description: "验证未在请求头中携带Authorization Token时，接口返回401或403权限不足"
+    epic: "项目管理平台"
+    feature: "经费审批模块"
+    story: "获取经费日志列表"
+    tag: ["异常场景", "安全验证"]
+    pytest_mark: "security"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/fundsLogList"
+      headers: {
+                 "Token": ""
+      }
+      params:
+        page: 1
+        size: 5
+    expected:
+      status_code: 401

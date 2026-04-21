@@ -1,0 +1,84 @@
+# 新增登录接口用例
+login:
+  # 1. 用例元信息（Allure标签+描述）
+  allure:
+    title: "登录接口成功测试用例"
+    description: "测试登录接口,使用正确的管理员账号和密码（RSA加密密码）"
+
+    epic: "InvEntropy"
+    feature: "登录模块"
+    story: "登录接口"
+
+    tag: ["登录", "接口测试"]
+
+    pytest_mark: "api"
+
+
+  # 2. 用例步骤（请求+断言+提取）
+  steps:
+    # 步骤1：发送登录请求（参数里的密码是明文，代码侧加密后替换）
+    request:
+      method: "POST"
+      url: "/login"
+      json:                 # 基础参数（动态值/加密值在代码侧处理）
+        username: "admin"
+        password: "123456"  # 明文密码，代码侧用RSA加密
+        userType: "admin"
+        timestamp: "${timestamp}"  # 占位符，代码侧替换为当前毫秒时间戳
+      params: {}
+      headers: {}
+
+    # 步骤2：断言响应规则
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          required_fields: ["userType", "token"]  # 校验必填字段
+          assert:
+            eq:
+              userType: "admin"  # 校验userType值
+
+    # 步骤3：提取登录成功后的token
+    extract:
+      token: "$.data.token"  # JSONPath提取token
+
+
+# 新增登录接口用例
+login_error:
+  # 1. 用例元信息（Allure标签+描述）
+  allure:
+    title: "登录接口失败测试用例"
+    description: "测试登录接口，使用错误的管理员账号和密码（RSA加密密码）"
+
+    epic: "InvEntropy"
+    feature: "登录模块"
+    story: "登录接口"
+
+    tag: ["登录", "接口测试"]
+
+    pytest_mark: "api"
+
+
+  # 2. 用例步骤（请求+断言+提取）
+  steps:
+    # 步骤1：发送登录请求（参数里的密码是明文，代码侧加密后替换）
+    request:
+      method: "POST"
+      url: "/login"
+      json:                 # 基础参数（动态值/加密值在代码侧处理）
+        username: "admin"
+        password: "123446"  # 明文密码，代码侧用RSA加密
+        userType: "admin"
+        timestamp: "${timestamp}"  # 占位符，代码侧替换为当前毫秒时间戳
+      params: {}
+      headers: {}
+
+    # 步骤2：断言响应规则
+    expected:
+      status_code: 200
+      response:
+        code: 401
+        msg: "用户名或密码错误"
+        data:

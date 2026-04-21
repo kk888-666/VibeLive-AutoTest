@@ -1,0 +1,66 @@
+get_account_list_normal:
+  allure:
+    title: "获取账号列表-正常场景-成功返回账号列表"
+    description: "验证管理员用户在登录状态下请求获取账号列表接口，能够成功返回账号列表数据，业务响应码为200"
+    epic: "用户中心系统"
+    feature: "账号管理模块"
+    story: "获取账号列表"
+    tag: ["正常场景", "冒烟用例"]
+    pytest_mark: "smoke"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/accountList"
+      headers:
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          list_data:
+              type: list
+              length: 5
+              object_required_items:
+                - "id"
+                - "username"
+                - "name"
+                - "phone"
+
+
+get_account_list_unauthorized:
+  allure:
+    title: "获取账号列表-异常场景-未登录访问被拒绝"
+    description: "验证未携带Token访问获取账号列表接口时，系统应拒绝请求并返回401未授权错误"
+    epic: "用户中心系统"
+    feature: "账号管理模块"
+    story: "获取账号列表"
+    tag: ["异常场景", "安全测试"]
+    pytest_mark: ""
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/accountList"
+      headers:
+        Token: ""
+    expected:
+      code: 401
+
+
+get_account_list_with_invalid_token:
+  allure:
+    title: "获取账号列表-异常场景-使用无效Token访问被拒绝"
+    description: "验证使用格式错误或已过期的Token请求接口时，系统应返回401未授权错误"
+    epic: "用户中心系统"
+    feature: "账号管理模块"
+    story: "获取账号列表"
+    tag: ["异常场景", "边界值测试"]
+    pytest_mark: "regression"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/accountList"
+      headers:
+        Token: "Bearer invalid_token_123"
+    expected:
+      code: 401

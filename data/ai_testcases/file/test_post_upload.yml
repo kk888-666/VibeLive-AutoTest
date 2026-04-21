@@ -1,0 +1,43 @@
+upload_file_normal_success:
+  allure:
+    title: "上传文件-正常场景-文件上传成功"
+    description: "验证用户上传文件到对象存储，接口正常返回文件URL，业务响应码为200"
+    epic: "项目管理平台"
+    feature: "文件管理模块"
+    story: "上传文件"
+    tag: ["正常场景", "冒烟用例"]
+    pytest_mark: "smoke"
+  steps:
+    request:
+      method: "POST"
+      url: "/upload"
+      headers:
+      files:
+        path: "docx/项目1.docx"
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+
+upload_file_abnormal_missing_file_param:
+  allure:
+    title: "上传文件-异常场景-缺少文件参数"
+    description: "验证未提供文件参数时，接口返回400错误，提示请求失败"
+    epic: "项目管理平台"
+    feature: "文件管理模块"
+    story: "上传文件"
+    tag: ["异常场景", "必填项校验"]
+    pytest_mark: ""
+  steps:
+    request:
+      method: "POST"
+      url: "/upload"
+      headers:
+        Token: ""
+    expected:
+      status_code: 200
+      response:
+        code: 400
+        msg: "出错啦~"

@@ -1,0 +1,61 @@
+apply_funds_normal_correct_parameters:
+  allure:
+    title: "申请经费-正常场景-参数正确提交成功"
+    description: "验证用户提交合法的经费申请参数，接口能正常接收并返回成功响应，业务码为200"
+    epic: "项目管理平台"
+    feature: "经费申请模块"
+    story: "申请经费"
+    tag: ["正常场景", "冒烟用例"]
+    pytest_mark: "smoke"
+  steps:
+    request:
+      method: "PUT"
+      url: "/user/commitPayFunds"
+      headers:
+        Content-Type: "application/json"
+      json:
+        projectId: 14
+        applicant: ""
+        reason: "购买实验材料"
+        appliedFunds: 5000.0
+        remainingFunds: 43500.0
+        applicantId: 0
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+
+
+apply_funds_abnormal_missing_project_id:
+  allure:
+    title: "申请经费-异常场景-缺少项目ID"
+    description: "验证当请求体中缺少必填字段projectId时，接口应返回400错误，提示参数异常"
+    epic: "项目管理平台"
+    feature: "经费申请模块"
+    story: "申请经费"
+    tag: ["异常场景", "参数校验"]
+    pytest_mark: ""
+  steps:
+    request:
+      method: "PUT"
+      url: "/user/commitPayFunds"
+      headers:
+        Content-Type: "application/json"
+      json:
+        applicant: "李四"
+        reason: "设备维护"
+        appliedFunds: 3000.0
+        remainingFunds: 17000.0
+        appliedTime: "${datetime}"
+    expected:
+      status_code: 200
+      response:
+        code: 400
+        msg: "出错啦~"
+        data:
+
+
+
+

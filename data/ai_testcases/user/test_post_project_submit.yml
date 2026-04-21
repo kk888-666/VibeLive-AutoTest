@@ -1,0 +1,364 @@
+submit_project_normal:
+  allure:
+    title: "提交项目-正常场景-项目信息完整提交成功"
+    description: "验证用户提交完整的项目信息，接口能够正常接收并返回成功响应，业务码为200"
+    epic: "项目管理平台"
+    feature: "项目申请模块"
+    story: "提交项目"
+    tag: ["正常场景", "冒烟用例"]
+    pytest_mark: "smoke"
+  steps:
+    request:
+      method: "POST"
+      url: "/project/submit"
+      headers: {}
+      json:
+        projectName: "项目${uuid}"
+        projectType: "横向项目"
+        applicant: "小红"
+        applicantId: ''
+        funds: 1234
+        content: "https://inventropy.oss-cn-hangzhou.aliyuncs.com/2026/02/项目13.docx"
+        deadline: "2026-02-28T00:00:00"
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+
+submit_project_normal_vertical:
+  allure:
+    title: "提交项目-正常场景-纵向项目提交成功"
+    description: "验证用户提交纵向项目类型，接口能够正常接收并返回成功响应"
+    epic: "项目管理平台"
+    feature: "项目申请模块"
+    story: "提交项目"
+    tag: ["正常场景"]
+  steps:
+    request:
+      method: "POST"
+      url: "/project/submit"
+      headers: {}
+      json:
+        projectName: "纵向研究项目${uuid}"
+        projectType: "纵向项目"
+        applicant: "小明"
+        applicantId: ''
+        funds: 50000
+        content: "https://inventropy.oss-cn-hangzhou.aliyuncs.com/2026/02/纵向项目.docx"
+        deadline: "2026-12-31T00:00:00"
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+
+submit_project_missing_name:
+  allure:
+    title: "提交项目-异常场景-缺少项目名称"
+    description: "验证缺少projectName参数时，接口返回相应的错误提示"
+    epic: "项目管理平台"
+    feature: "项目申请模块"
+    story: "提交项目"
+    tag: ["异常场景", "参数缺失"]
+  steps:
+    request:
+      method: "POST"
+      url: "/project/submit"
+      headers: {}
+      json:
+        projectType: "横向项目"
+        applicant: "小红"
+        applicantId: ''
+        funds: 1234
+        content: "https://inventropy.oss-cn-hangzhou.aliyuncs.com/2026/02/项目13.docx"
+        deadline: "2026-02-28T00:00:00"
+    expected:
+      status_code: 200
+      response:
+        code: 400
+
+submit_project_missing_type:
+  allure:
+    title: "提交项目-异常场景-缺少项目类型"
+    description: "验证缺少projectType参数时，接口返回相应的错误提示"
+    epic: "项目管理平台"
+    feature: "项目申请模块"
+    story: "提交项目"
+    tag: ["异常场景", "参数缺失"]
+  steps:
+    request:
+      method: "POST"
+      url: "/project/submit"
+      headers: {}
+      json:
+        projectName: "项目${uuid}"
+        applicant: "小红"
+        applicantId: ''
+        funds: 1234
+        content: "https://inventropy.oss-cn-hangzhou.aliyuncs.com/2026/02/项目13.docx"
+        deadline: "2026-02-28T00:00:00"
+    expected:
+      status_code: 200
+      response:
+        code: 400
+
+submit_project_missing_applicant:
+  allure:
+    title: "提交项目-异常场景-缺少申请人"
+    description: "验证缺少applicant参数时，接口返回相应的错误提示"
+    epic: "项目管理平台"
+    feature: "项目申请模块"
+    story: "提交项目"
+    tag: ["异常场景", "参数缺失"]
+  steps:
+    request:
+      method: "POST"
+      url: "/project/submit"
+      headers: {}
+      json:
+        projectName: "项目${uuid}"
+        projectType: "横向项目"
+        applicantId: ''
+        funds: 1234
+        content: "https://inventropy.oss-cn-hangzhou.aliyuncs.com/2026/02/项目13.docx"
+        deadline: "2026-02-28T00:00:00"
+    expected:
+      status_code: 200
+      response:
+        code: 400
+
+submit_project_missing_funds:
+  allure:
+    title: "提交项目-异常场景-缺少经费金额"
+    description: "验证缺少funds参数时，接口返回相应的错误提示"
+    epic: "项目管理平台"
+    feature: "项目申请模块"
+    story: "提交项目"
+    tag: ["异常场景", "参数缺失"]
+  steps:
+    request:
+      method: "POST"
+      url: "/project/submit"
+      headers: {}
+      json:
+        projectName: "项目${uuid}"
+        projectType: "横向项目"
+        applicant: "小红"
+        applicantId: ''
+        content: "https://inventropy.oss-cn-hangzhou.aliyuncs.com/2026/02/项目13.docx"
+        deadline: "2026-02-28T00:00:00"
+    expected:
+      status_code: 200
+      response:
+        code: 400
+
+submit_project_invalid_type:
+  allure:
+    title: "提交项目-异常场景-无效的项目类型"
+    description: "验证projectType为非法值时，接口返回相应的错误提示"
+    epic: "项目管理平台"
+    feature: "项目申请模块"
+    story: "提交项目"
+    tag: ["异常场景", "参数错误"]
+  steps:
+    request:
+      method: "POST"
+      url: "/project/submit"
+      headers: {}
+      json:
+        projectName: "项目${uuid}"
+        projectType: "非法项目类型"
+        applicant: "小红"
+        applicantId: ''
+        funds: 1234
+        content: "https://inventropy.oss-cn-hangzhou.aliyuncs.com/2026/02/项目13.docx"
+        deadline: "2026-02-28T00:00:00"
+    expected:
+      status_code: 200
+      response:
+        code: 400
+
+submit_project_negative_funds:
+  allure:
+    title: "提交项目-边界场景-经费为负数"
+    description: "验证funds为负数时，接口返回相应的错误提示"
+    epic: "项目管理平台"
+    feature: "项目申请模块"
+    story: "提交项目"
+    tag: ["边界场景", "参数校验"]
+  steps:
+    request:
+      method: "POST"
+      url: "/project/submit"
+      headers: {}
+      json:
+        projectName: "项目${uuid}"
+        projectType: "横向项目"
+        applicant: "小红"
+        applicantId: ''
+        funds: -1000
+        content: "https://inventropy.oss-cn-hangzhou.aliyuncs.com/2026/02/项目13.docx"
+        deadline: "2026-02-28T00:00:00"
+    expected:
+      status_code: 200
+      response:
+        code: 400
+
+submit_project_zero_funds:
+  allure:
+    title: "提交项目-边界场景-经费为零"
+    description: "验证funds为0时，接口的处理方式"
+    epic: "项目管理平台"
+    feature: "项目申请模块"
+    story: "提交项目"
+    tag: ["边界场景", "参数校验"]
+  steps:
+    request:
+      method: "POST"
+      url: "/project/submit"
+      headers: {}
+      json:
+        projectName: "项目${uuid}"
+        projectType: "横向项目"
+        applicant: "小红"
+        applicantId: ''
+        funds: 0
+        content: "https://inventropy.oss-cn-hangzhou.aliyuncs.com/2026/02/项目13.docx"
+        deadline: "2026-02-28T00:00:00"
+    expected:
+      status_code: 200
+      response:
+        code: 400
+
+submit_project_empty_name:
+  allure:
+    title: "提交项目-边界场景-项目名称为空"
+    description: "验证projectName为空字符串时，接口的处理方式"
+    epic: "项目管理平台"
+    feature: "项目申请模块"
+    story: "提交项目"
+    tag: ["边界场景", "参数校验"]
+  steps:
+    request:
+      method: "POST"
+      url: "/project/submit"
+      headers: {}
+      json:
+        projectName: ""
+        projectType: "横向项目"
+        applicant: "小红"
+        applicantId: ''
+        funds: 1234
+        content: "https://inventropy.oss-cn-hangzhou.aliyuncs.com/2026/02/项目13.docx"
+        deadline: "2026-02-28T00:00:00"
+    expected:
+      status_code: 200
+      response:
+        code: 400
+
+submit_project_empty_applicant:
+  allure:
+    title: "提交项目-边界场景-申请人为空"
+    description: "验证applicant为空字符串时，接口的处理方式"
+    epic: "项目管理平台"
+    feature: "项目申请模块"
+    story: "提交项目"
+    tag: ["边界场景", "参数校验"]
+  steps:
+    request:
+      method: "POST"
+      url: "/project/submit"
+      headers: {}
+      json:
+        projectName: "项目${uuid}"
+        projectType: "横向项目"
+        applicant: ""
+        applicantId: ''
+        funds: 1234
+        content: "https://inventropy.oss-cn-hangzhou.aliyuncs.com/2026/02/项目13.docx"
+        deadline: "2026-02-28T00:00:00"
+    expected:
+      status_code: 200
+      response:
+        code: 400
+
+submit_project_past_deadline:
+  allure:
+    title: "提交项目-边界场景-截止日期为过去时间"
+    description: "验证deadline为过去时间时，接口的处理方式"
+    epic: "项目管理平台"
+    feature: "项目申请模块"
+    story: "提交项目"
+    tag: ["边界场景", "参数校验"]
+  steps:
+    request:
+      method: "POST"
+      url: "/project/submit"
+      headers: {}
+      json:
+        projectName: "项目${uuid}"
+        projectType: "横向项目"
+        applicant: "小红"
+        applicantId: ''
+        funds: 1234
+        content: "https://inventropy.oss-cn-hangzhou.aliyuncs.com/2026/02/项目13.docx"
+        deadline: "2020-01-01T00:00:00"
+    expected:
+      status_code: 200
+      response:
+        code: 400
+
+submit_project_invalid_deadline_format:
+  allure:
+    title: "提交项目-异常场景-截止日期格式错误"
+    description: "验证deadline为非法日期格式时，接口的处理方式"
+    epic: "项目管理平台"
+    feature: "项目申请模块"
+    story: "提交项目"
+    tag: ["异常场景", "参数错误"]
+  steps:
+    request:
+      method: "POST"
+      url: "/project/submit"
+      headers: {}
+      json:
+        projectName: "项目${uuid}"
+        projectType: "横向项目"
+        applicant: "小红"
+        applicantId: ''
+        funds: 1234
+        content: "https://inventropy.oss-cn-hangzhou.aliyuncs.com/2026/02/项目13.docx"
+        deadline: "2026/02/28"
+    expected:
+      status_code: 200
+      response:
+        code: 400
+
+submit_project_funds_string:
+  allure:
+    title: "提交项目-异常场景-经费类型错误"
+    description: "验证funds为字符串类型时，接口的处理方式"
+    epic: "项目管理平台"
+    feature: "项目申请模块"
+    story: "提交项目"
+    tag: ["异常场景", "参数错误"]
+  steps:
+    request:
+      method: "POST"
+      url: "/project/submit"
+      headers: {}
+      json:
+        projectName: "项目${uuid}"
+        projectType: "横向项目"
+        applicant: "小红"
+        applicantId: ''
+        funds: "一千元"
+        content: "https://inventropy.oss-cn-hangzhou.aliyuncs.com/2026/02/项目13.docx"
+        deadline: "2026-02-28T00:00:00"
+    expected:
+      status_code: 200
+      response:
+        code: 400

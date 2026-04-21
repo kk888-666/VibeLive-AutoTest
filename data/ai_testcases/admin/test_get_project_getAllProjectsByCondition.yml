@@ -1,0 +1,40 @@
+project_getAllProjectsByCondition_normal_with_valid_params:
+  allure:
+    title: "条件查询项目-正常场景-携带有效查询参数成功返回项目列表"
+    description: "验证用户通过合法的查询条件筛选项目，接口能正确返回匹配的项目数据，业务响应码为200"
+    epic: "项目管理平台"
+    feature: "项目查询模块"
+    story: "条件查询项目"
+    tag: ["正常场景", "冒烟用例"]
+    pytest_mark: "smoke"
+  steps:
+    request:
+      method: "GET"
+      url: "/project/getAllProjectsByCondition"
+      params:
+        page: 1
+        size: 5
+        projectId: ''
+        applicant: '小'
+      headers:
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          required_fields: ["records"]
+          list_check:
+            records:
+              object_required_items:
+                - "id"
+                - "projectName"
+                - "projectType"
+                - "applicant"
+                - "applicantId"
+                - "funds"
+                - "remainingFunds"
+                - "content"
+                - "startTime"
+
+

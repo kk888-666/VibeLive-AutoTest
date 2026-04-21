@@ -1,0 +1,45 @@
+get_funds_list_normal_success:
+  allure:
+    title: "获取经费类型列表-正常场景-成功返回经费类型列表"
+    description: "验证管理员用户调用获取经费类型列表接口，能够成功返回状态码200及正确的业务数据"
+    epic: "项目管理平台"
+    feature: "经费管理模块"
+    story: "获取经费类型列表"
+    tag: ["正常场景", "冒烟用例"]
+    pytest_mark: "smoke"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/funds"
+      headers:
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          required_fields: ["totalFunds","totalRemainingFunds"]
+          assert:
+            type:
+              totalFunds: float
+              totalRemainingFunds: float
+    extract: {}
+
+get_funds_list_abnormal_unauthorized:
+  allure:
+    title: "获取经费类型列表-异常场景-未登录访问返回401"
+    description: "验证未携带token调用获取经费类型列表接口，返回HTTP 401未授权"
+    epic: "项目管理平台"
+    feature: "经费管理模块"
+    story: "获取经费类型列表"
+    tag: ["异常场景", "安全测试"]
+    pytest_mark: ""
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/funds"
+      headers: {
+                 "Token": ""
+      }
+    expected:
+      status_code: 401

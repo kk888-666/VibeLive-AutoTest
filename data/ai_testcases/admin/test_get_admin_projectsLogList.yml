@@ -1,0 +1,165 @@
+get_projects_log_list_normal_default_page_size:
+  allure:
+    title: "获取项目日志列表-正常场景-默认分页参数查询成功"
+    description: "验证管理员在未传入分页参数时，接口能正确返回第一页、每页5条的项目审批日志数据"
+    epic: "项目管理平台"
+    feature: "项目日志模块"
+    story: "获取项目日志列表"
+    tag: ["正常场景", "冒烟用例"]
+    pytest_mark: "smoke"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/projectsLogList"
+      headers: {}
+      params: {}
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          required_fields: ["records", "total", "pageSize", "page"]
+          assert:
+            lte:
+              pageSize: 5
+            type:
+              total: int
+              page: int
+          list_check:
+            records:
+              every_item_required_fields:
+                - "id"
+                - "oldStatus"
+                - "newStatus"
+                - "reason"
+                - "approverId"
+                - "createTime"
+
+
+get_projects_log_list_normal_custom_page_size:
+  allure:
+    title: "获取项目日志列表-正常场景-自定义分页参数查询成功"
+    description: "验证管理员传入page=1, size=10时，接口能正确返回对应分页数据"
+    epic: "项目管理平台"
+    feature: "项目日志模块"
+    story: "获取项目日志列表"
+    tag: ["正常场景", "分页测试"]
+    pytest_mark: "regression"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/projectsLogList"
+      headers: {}
+      params:
+        page: 1
+        size: 10
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          assert:
+            eq:
+              page: 1
+              pageSize: 10
+          list_check:
+            records:
+              length: 10
+              every_item_required_fields:
+                - "id"
+                - "oldStatus"
+                - "newStatus"
+                - "reason"
+                - "approverId"
+                - "createTime"
+
+get_projects_log_list_abnormal_unauthorized:
+  allure:
+    title: "获取项目日志列表-异常场景-未登录访问被拒绝"
+    description: "验证未携带token访问接口时，系统返回401或403权限不足错误"
+    epic: "项目管理平台"
+    feature: "项目日志模块"
+    story: "获取项目日志列表"
+    tag: ["异常场景", "权限测试"]
+    pytest_mark: "security"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/projectsLogList"
+      headers: {
+                 "Token": ""
+      }
+      params: {}
+    expected:
+      status_code: 401
+
+get_projects_log_list_boundary_min_page:
+  allure:
+    title: "获取项目日志列表-边界场景-最小页码值（page=0）"
+    description: "验证当页码为0时，接口是否按默认规则处理或返回空数据"
+    epic: "项目管理平台"
+    feature: "项目日志模块"
+    story: "获取项目日志列表"
+    tag: ["边界场景", "健壮性测试"]
+    pytest_mark: "boundary"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/projectsLogList"
+      headers: {}
+      params:
+        page: 0
+        size: 5
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        data:
+          list_check:
+            records:
+              every_item_required_fields:
+                - "id"
+                - "oldStatus"
+                - "newStatus"
+                - "reason"
+                - "approverId"
+                - "createTime"
+
+get_projects_log_list_boundary_max_size:
+  allure:
+    title: "获取项目日志列表-边界场景-最大每页条数（size=100）"
+    description: "验证当每页条数设置为最大允许值100时，接口能否正常响应且不超过限制"
+    epic: "项目管理平台"
+    feature: "项目日志模块"
+    story: "获取项目日志列表"
+    tag: ["边界场景", "性能测试"]
+    pytest_mark: "regression"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/projectsLogList"
+      headers: {}
+      params:
+        page: 1
+        size: 100
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        data:
+          assert:
+            type:
+              pageSize: int
+            eq:
+              page: 1
+          list_check:
+            records:
+              every_item_required_fields:
+                - "id"
+                - "oldStatus"
+                - "newStatus"
+                - "reason"
+                - "approverId"
+                - "createTime"

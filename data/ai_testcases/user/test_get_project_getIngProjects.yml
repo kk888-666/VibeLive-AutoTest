@@ -1,0 +1,71 @@
+get_ing_projects_normal_success:
+  allure:
+    title: "获取进行中项目-正常场景-成功返回进行中项目列表"
+    description: "验证当前用户调用获取进行中项目接口时，能够正确返回状态码200及业务码200，并返回非空的项目列表数据"
+    epic: "项目管理平台"
+    feature: "项目查询模块"
+    story: "获取进行中项目"
+    tag: ["正常场景", "冒烟用例"]
+    pytest_mark: "smoke"
+  steps:
+    request:
+      method: "GET"
+      url: "/project/getIngProjects"
+      headers:
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          list_data:
+              object_required_items:
+                - "id"
+                - "projectName"
+                - "projectType"
+                - "applicant"
+                - "funds"
+                - "remainingFunds"
+                - "status"
+
+
+get_ing_projects_abnormal_unauthorized_no_token:
+  allure:
+    title: "获取进行中项目-异常场景-未携带Token认证信息"
+    description: "验证未在请求头中携带JWT Token时，接口应拒绝访问并返回401或403状态码及对应错误提示"
+    epic: "项目管理平台"
+    feature: "项目查询模块"
+    story: "获取进行中项目"
+    tag: ["异常场景", "安全测试"]
+    pytest_mark: "regression"
+  steps:
+    request:
+      method: "GET"
+      url: "/project/getIngProjects"
+      headers: {
+                 "Token": ""
+      }
+    expected:
+      status_code: 401
+
+
+get_ing_projects_boundary_empty_list:
+  allure:
+    title: "获取进行中项目-边界场景-用户无进行中项目返回空列表"
+    description: "验证当当前用户没有进行中的项目时，接口应正常返回200状态码，业务码为200，且records列表为空"
+    epic: "项目管理平台"
+    feature: "项目查询模块"
+    story: "获取进行中项目"
+    tag: ["边界场景", "数据边界"]
+    pytest_mark: "regression"
+  steps:
+    request:
+      method: "GET"
+      url: "/project/getIngProjects"
+      headers:
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:

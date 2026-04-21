@@ -1,0 +1,156 @@
+get_funds_approval_list_normal_default_page_size:
+  allure:
+    title: "获取经费审批列表-正常场景-默认分页参数查询成功"
+    description: "验证管理员分页获取待审批经费申请列表接口，使用默认分页参数（page=1, size=5），能正常返回数据且响应结构正确"
+    epic: "经费管理系统"
+    feature: "经费审批模块"
+    story: "获取经费审批列表"
+    tag: ["正常场景", "分页查询"]
+    pytest_mark: "smoke"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/fundsApprovalList"
+      headers: {}
+      params: {}
+      json: {}
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          required_fields: ["records", "total", "pageSize", "page"]
+          assert:
+            type:
+              total: int
+              pageSize: int
+              page: int
+              records: list
+          list_check:
+            records:
+              length: 5
+              every_item_required_fields:
+                - "id"
+                - "projectId"
+                - "applicant"
+                - "reason"
+                - "appliedFunds"
+                - "remainingFunds"
+                - "applicantId"
+                - "appliedTime"
+
+get_funds_approval_list_normal_custom_page_size:
+  allure:
+    title: "获取经费审批列表-正常场景-自定义分页条数查询成功"
+    description: "验证管理员分页获取待审批经费申请列表接口，使用自定义分页参数（page=1, size=10），能正常返回10条数据"
+    epic: "经费管理系统"
+    feature: "经费审批模块"
+    story: "获取经费审批列表"
+    tag: ["正常场景", "分页查询"]
+    pytest_mark: "regression"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/fundsApprovalList"
+      headers: {}
+      params:
+        page: 1
+        size: 10
+      json: {}
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          assert:
+            lte:
+              pageSize: 10
+          list_check:
+            records:
+              every_item_required_fields:
+                - "id"
+                - "projectId"
+                - "applicant"
+                - "reason"
+                - "appliedFunds"
+                - "remainingFunds"
+                - "applicantId"
+                - "appliedTime"
+
+get_funds_approval_list_abnormal_page_not_number:
+  allure:
+    title: "获取经费审批列表-异常场景-页码非数字类型"
+    description: "验证当page参数传入非数字类型时，接口应正常处理并返回默认值或错误提示"
+    epic: "经费管理系统"
+    feature: "经费审批模块"
+    story: "获取经费审批列表"
+    tag: ["异常场景", "参数类型错误"]
+    pytest_mark: "regression"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/fundsApprovalList"
+      headers: {}
+      params:
+        page: "abc"
+        size: 5
+      json: {}
+    expected:
+      status_code: 200
+      response:
+        code: 400
+        msg: "出错啦~"
+        data:
+
+get_funds_approval_list_abnormal_size_exceed_max:
+  allure:
+    title: "获取经费审批列表-异常场景-每页条数超过最大限制"
+    description: "验证当size参数超过系统限制（如大于100）时，接口是否进行合理限制或返回错误"
+    epic: "经费管理系统"
+    feature: "经费审批模块"
+    story: "获取经费审批列表"
+    tag: ["异常场景", "边界值测试"]
+    pytest_mark: "boundary"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/fundsApprovalList"
+      headers: {}
+      params:
+        page: 1
+        size: 200
+      json: {}
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          assert:
+            type:
+              records: list
+
+get_funds_approval_list_without_auth:
+  allure:
+    title: "获取经费审批列表-异常场景-未携带认证Token"
+    description: "验证未携带JWT Token时访问经费审批列表接口，应返回401未授权"
+    epic: "经费管理系统"
+    feature: "经费审批模块"
+    story: "获取经费审批列表"
+    tag: ["异常场景", "权限校验"]
+    pytest_mark: "security"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/fundsApprovalList"
+      headers: {
+                 "Token": ""
+      }
+      params:
+        page: 1
+        size: 5
+      json: {}
+    expected:
+      status_code: 401

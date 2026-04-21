@@ -1,0 +1,56 @@
+{$name}:
+  # 1. 用例元信息
+  allure:
+    title: ""
+    description: ""
+    epic: ""
+    feature: ""
+    story: ""
+    tag: [ "" ]
+    pytest_mark: ""
+
+
+  steps:
+    # 2. 请求信息
+    request:
+      method: ""
+      url: ""
+      headers: {}
+      params: {}
+      json: {}
+
+    # 3. 预期断言规则
+    expected:
+      status_code: 200  # 响应状态码
+      response:
+        code: 401       # 业务码
+        msg: ""  # 提示信息
+        data:
+          # 校验data下的字段是否存在
+          required_fields: ["Algorithm", "records", ""]
+          # 校验data下的字段值
+          assert:
+            eq:
+              Algorithm: "RSA"
+              records.items: "not_empty"
+            # 校验data下的字段值（包含关系）
+            contains:
+              Algorithm: "S"
+            regex:
+              Algorithm: "^RSA$"
+            type:
+              Algorithm: str
+          list_check:
+            records:
+              length: 5
+              every_item_required_fields:
+                - "id"
+                - "projectName"
+                - "projectType"
+                - "applicant"
+                - "funds"
+                - "status"
+
+    # 4. 提取数据
+    extract:
+      var_name: jsonpath表达式

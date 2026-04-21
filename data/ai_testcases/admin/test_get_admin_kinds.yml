@@ -1,0 +1,48 @@
+get_project_kinds_normal_success:
+  allure:
+    title: "获取项目种类列表-正常场景-请求成功"
+    description: "验证用户发起GET请求获取项目种类列表，接口返回200状态码，业务码为200，响应数据中包含项目种类列表"
+    epic: "项目管理平台"
+    feature: "项目配置模块"
+    story: "获取项目种类列表"
+    tag: ["正常场景", "冒烟用例"]
+    pytest_mark: "smoke"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/kinds"
+      headers: {}
+      params: {}
+      json: {}
+    expected:
+      status_code: 200
+      response:
+        code: 200
+        msg: "success"
+        data:
+          required_fields: ["projects",
+        "projectsOf2",
+        "projectsOf3",
+        "projectsOf4",
+        "projectsOf5"]
+
+get_project_kinds_abnormal_unauthorized_missing_token:
+  allure:
+    title: "获取项目种类列表-异常场景-未携带Token认证信息"
+    description: "验证未在请求头中携带JWT Token时，访问需鉴权的获取项目种类接口，应返回401或403权限错误"
+    epic: "项目管理平台"
+    feature: "项目配置模块"
+    story: "获取项目种类列表"
+    tag: ["异常场景", "安全测试"]
+    pytest_mark: "security"
+  steps:
+    request:
+      method: "GET"
+      url: "/admin/kinds"
+      headers: {
+                 "Token": ""
+      }
+      params: {}
+      json: {}
+    expected:
+      status_code: 401
