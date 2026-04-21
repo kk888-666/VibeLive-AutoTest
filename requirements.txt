@@ -1,0 +1,11 @@
+requests
+pytest-xdist
+pytest-ordering
+pytest
+allure-pytest
+pyyaml
+cryptography
+python-dotenv
+jsonpath
+pytest-rerunfailures
+OpenAI
