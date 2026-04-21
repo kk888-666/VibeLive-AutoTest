@@ -14,7 +14,7 @@
 
 
 ## 效果展示
-Allure 报告在线查看：[GitHub Pages](https://kk888-666.github.io/VibeLive-AutoTest/)  
+Allure 报告查看：[GitHub Pages](https://kk888-666.github.io/VibeLive-AutoTest/)  
  ![img/img.png](img/img.png)
 
 CI/CD 工作流：  
