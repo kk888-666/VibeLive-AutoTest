@@ -1,0 +1,6 @@
+INFO     Hsyuan:api_utils.py:86 =======================================================获取商铺类型列表测试=======================================================
+INFO     Hsyuan:api_utils.py:68 1.正在发送请求
+INFO     Hsyuan:api_utils.py:69 {'method': 'GET', 'url': '/shop-type/list', 'headers': {}, 'params': {}, 'json': {}}
+INFO     Hsyuan:api_utils.py:41 请求失败: Invalid URL '/shop-type/list': No scheme supplied. Perhaps you meant https:///shop-type/list?
+INFO     Hsyuan:api_utils.py:76 3.正在提取变量
+INFO     Hsyuan:api_utils.py:81 无法提取变量，因为请求失败，没有响应对象。

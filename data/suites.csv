@@ -1,0 +1,2 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Tue Apr 21 12:24:15 UTC 2026","Tue Apr 21 12:24:15 UTC 2026","1","testcases","test_music","TestHmdpAPI","","","获取商铺类型列表测试","测试获取首页商铺类型列表接口，期望返回状态码200且success为true"
